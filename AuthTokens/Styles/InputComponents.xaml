@@ -1,0 +1,40 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <DataTemplate x:Key="HeadersTemplate">
+        <TextBlock
+            Text="{Binding}"
+            Foreground="Black"
+            Opacity="0.8"
+            Margin="{StaticResource XSmallBottomMargin}" />
+    </DataTemplate>
+
+
+    <Style x:Key="NewItemEntryTextBoxStyle" TargetType="TextBox">
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Margin" Value="24,24,24,0" />
+        <Setter Property="HeaderTemplate" Value="{StaticResource HeadersTemplate}" />
+        <Setter Property="BorderThickness" Value="0.5" />
+        <Setter Property="BorderBrush" Value="Black" />
+    </Style>
+
+    <Style x:Key="NewItemEntryComboBoxStyle" TargetType="ComboBox">
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Margin" Value="24,24,24,0" />
+        <Setter Property="HeaderTemplate" Value="{StaticResource HeadersTemplate}" />
+        <Setter Property="BorderThickness" Value="0.5" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="BorderBrush" Value="Black" />
+    </Style>
+
+    <Style x:Key="NewItemEntryAutoSuggestBoxStyle" TargetType="AutoSuggestBox">
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Margin" Value="24,24,24,0" />
+        <Setter Property="BorderThickness" Value="0.5" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="BorderBrush" Value="Black" />
+        <Setter Property="TextBoxStyle" Value="{StaticResource NewItemEntryTextBoxStyle}" />
+    </Style>
+
+</ResourceDictionary>

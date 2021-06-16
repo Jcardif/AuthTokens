@@ -1,0 +1,41 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <ResourceDictionary.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Dark">
+                            <!-- ReSharper disable once Xaml.RedundantResource -->
+                            <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="White" />
+                            <!-- ReSharper disable once Xaml.RedundantResource -->
+                            <SolidColorBrush x:Key="ButtonForegroundPressed" Color="White" />
+                            <!-- ReSharper disable once Xaml.RedundantResource -->
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver"
+                                             Color="{StaticResource ColorPrimaryLight}" />
+                            <!-- ReSharper disable once Xaml.RedundantResource -->
+                            <SolidColorBrush x:Key="ButtonBackgroundPressed"
+                                             Color="{StaticResource ColorPrimaryLight}" />
+                        </ResourceDictionary>
+                        <ResourceDictionary x:Key="Light">
+                            <!-- ReSharper disable once Xaml.RedundantResource -->
+                            <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="White" />
+                            <!-- ReSharper disable once Xaml.RedundantResource -->
+                            <SolidColorBrush x:Key="ButtonForegroundPressed" Color="White" />
+                            <!-- ReSharper disable once Xaml.RedundantResource -->
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver"
+                                             Color="{StaticResource ColorPrimaryLight}" />
+                            <!-- ReSharper disable once Xaml.RedundantResource -->
+                            <SolidColorBrush x:Key="ButtonBackgroundPressed"
+                                             Color="{StaticResource ColorPrimaryLight}" />
+                        </ResourceDictionary>
+                    </ResourceDictionary.ThemeDictionaries>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+
+</ResourceDictionary>

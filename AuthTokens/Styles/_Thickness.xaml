@@ -1,0 +1,67 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <!--Extra Extra Large Size margins-->
+    <Thickness x:Key="XXXLargeTopMargin">0,72,0,0</Thickness>
+
+    <!--Extra Large Size margins-->
+    <Thickness x:Key="ExtraLargeTopMargin">0,48,0,0</Thickness>
+    <Thickness x:Key="ExtraLargeTopBottomMargin">0,48,0,48</Thickness>
+    <Thickness x:Key="ExtraLargeTopLeftMargin">48,48,0,48</Thickness>
+    <Thickness x:Key="ExtraLargeLeftTopBottomMargin">48,48,0,48</Thickness>
+    <Thickness x:Key="ExtraLargeLeftTopRightBottomMargin">48,48,48,48</Thickness>
+
+    <!--Large size margins-->
+    <Thickness x:Key="LargeTopMargin">0,36,0,0</Thickness>
+    <Thickness x:Key="LargeLeftMargin">36,0,0,0</Thickness>
+    <Thickness x:Key="LargeRightMargin">0,0,36,0</Thickness>
+    <Thickness x:Key="LargeBottomMargin">0,0,0,36</Thickness>
+    <Thickness x:Key="LargeTopBottomMargin">0,36,0,36</Thickness>
+    <Thickness x:Key="LargeLeftTopBottomMargin">36,36,0,36</Thickness>
+    <Thickness x:Key="LargeLeftRightMargin">36,0,36,0</Thickness>
+    <Thickness x:Key="LargeLeftTopRightBottomMargin">36,36,36,36</Thickness>
+    <Thickness x:Key="LargeTopRightMargin">0,36,36,0</Thickness>
+
+    <!--Medium size margins-->
+    <Thickness x:Key="MediumLeftMargin">24,0,0,0</Thickness>
+    <Thickness x:Key="MediumLeftRightMargin">24,0,24,0</Thickness>
+    <Thickness x:Key="MediumLeftTopMargin">24,24,0,0</Thickness>
+    <Thickness x:Key="MediumLeftTopRightBottomMargin">24,24,24,24</Thickness>
+    <Thickness x:Key="MediumTopMargin">0,24,0,0</Thickness>
+    <Thickness x:Key="MediumTopRightMargin">0,24,24,0</Thickness>
+    <Thickness x:Key="MediumTopBottomMargin">0,24,0,24</Thickness>
+    <Thickness x:Key="MediumRightMargin">0,0,24,0</Thickness>
+    <Thickness x:Key="MediumRightBottomMargin">0,0,24,24</Thickness>
+    <Thickness x:Key="MediumBottomMargin">0,0,0,24</Thickness>
+    <Thickness x:Key="MediumLeftBottomMargin">24,0,0,24</Thickness>
+
+    <!--Small size margins-->
+    <Thickness x:Key="SmallLeftMargin">12, 0, 0, 0</Thickness>
+    <Thickness x:Key="SmallLeftTopMargin">12, 12, 0, 0</Thickness>
+    <Thickness x:Key="SmallLeftBottomMargin">0, 0, 0, 12</Thickness>
+    <Thickness x:Key="SmallLeftRightMargin">12, 0, 12, 0</Thickness>
+    <Thickness x:Key="SmallLeftRightBottomMargin">12, 0, 12, 12</Thickness>
+    <Thickness x:Key="SmallLeftTopRightBottomMargin">12, 12, 12, 12</Thickness>
+    <Thickness x:Key="SmallTopMargin">0, 12, 0, 0</Thickness>
+    <Thickness x:Key="SmallTopRightMargin">0, 12, 12, 0</Thickness>
+    <Thickness x:Key="SmallTopRightBottomMargin">0, 12, 12, 12</Thickness>
+    <Thickness x:Key="SmallTopBottomMargin">0, 12, 0, 12</Thickness>
+    <Thickness x:Key="SmallRightMargin">0, 0, 12, 0</Thickness>
+    <Thickness x:Key="SmallBottomMargin">0, 0, 0, 12</Thickness>
+    <Thickness x:Key="SmallRightBottomMargin">0, 0, 12, 12</Thickness>
+
+    <!--Extra Small size margins-->
+    <Thickness x:Key="XSmallLeftMargin">8, 0, 0, 0</Thickness>
+    <Thickness x:Key="XSmallLeftTopMargin">8, 8, 0, 0</Thickness>
+    <Thickness x:Key="XSmallLeftRightMargin">8, 0, 8, 0</Thickness>
+    <Thickness x:Key="XSmallLeftTopRightBottomMargin">8, 8, 8, 8</Thickness>
+    <Thickness x:Key="XSmallTopMargin">0, 8, 0, 0</Thickness>
+    <Thickness x:Key="XSmallBottomMargin">0, 0, 0, 8</Thickness>
+    <Thickness x:Key="XSmallTopRightMargin">0, 8, 8, 0</Thickness>
+
+    <!--Extra Extra Small size margins-->
+    <Thickness x:Key="XXSmallTopMargin">0, 4, 0, 0</Thickness>
+    <Thickness x:Key="XXSmallTopRightBottomMargin">0, 4, 4, 4</Thickness>
+</ResourceDictionary>

@@ -1,0 +1,242 @@
+﻿<Page
+    x:Class="AuthTokens.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:converters="using:Microsoft.Toolkit.Uwp.UI.Converters"
+    mc:Ignorable="d"
+    Background="White">
+
+    <Page.Resources>
+        <converters:BoolNegationConverter x:Key="BoolNegationConverter"/>
+    </Page.Resources>
+
+    <Grid
+        Padding="{StaticResource LargeLeftTopRightBottomMargin}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid
+            Grid.Row="0"
+            Padding="{StaticResource MediumLeftTopRightBottomMargin}"
+            CornerRadius="8"
+            Background="#eceff1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                Grid.Row="0" Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Foreground="Black"
+                FontSize="{StaticResource LargeFontSize}"
+                FontWeight="SemiBold"
+                Text="Azure Active Directory Configuration"
+                FontFamily="Open Sans" />
+
+            <TextBox
+                Grid.Row="1" Grid.Column="0"
+                Header="Tenant Id"
+                Text="Common"
+                Style="{StaticResource NewItemEntryTextBoxStyle}" />
+
+            <TextBox
+                Grid.Row="1" Grid.Column="1"
+                Header="Client Id"
+                Style="{StaticResource NewItemEntryTextBoxStyle}" />
+
+
+            <controls:RadioButtons
+                Grid.Row="2" Grid.Column="0"
+                Header="Allowed Authentication"
+                SelectedIndex="0"
+                Margin="24,24,24,0"
+                SelectionChanged="AuthenticationTypeButtons_OnSelectionChanged"
+                Name="AuthenticationTypeButtons">
+                <x:String>Organization Accounts Only</x:String>
+                <x:String>Personal Microsoft Accounts Only</x:String>
+                <x:String>Both Organization and Personal Microsoft Accounts</x:String>
+            </controls:RadioButtons>
+        </Grid>
+
+        <Grid
+            Grid.Row="0" Grid.Column="1"
+            Margin="{StaticResource MediumLeftMargin}"
+            Padding="{StaticResource MediumLeftTopRightBottomMargin}"
+            CornerRadius="8"
+            Background="#eceff1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                Grid.Row="0" Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Foreground="Black"
+                FontSize="{StaticResource LargeFontSize}"
+                FontWeight="SemiBold"
+                Text="API Permissions Configuration"
+                FontFamily="Open Sans" />
+
+            <ToggleSwitch
+                Grid.Row="1" Grid.Column="0"
+                IsOn="{x:Bind UseCustomScopes, Mode=OneWay}"
+                Toggled="ToggleSwitch_OnToggled"
+                Margin="24,24,24,0"
+                Header="API Permissions Categories"
+                OnContent="Toggle to use Graph API Permissions"
+                OffContent="Toggle to use Custom API Permissions"/>
+
+            <AutoSuggestBox
+                Grid.Row="2" Grid.Column="0"
+                IsEnabled="{x:Bind Path=UseCustomScopes, Mode=OneWay, Converter={StaticResource BoolNegationConverter }}"
+                Style="{StaticResource NewItemEntryAutoSuggestBoxStyle}"
+                Header="Microsoft Graph API Permissions"
+                ItemsSource="{x:Bind GraphScopes, Mode=OneWay}" />
+
+            <Grid
+                Grid.Row="3" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    Grid.Column="0"
+                    Name="CustomApiPermissionTextBox"
+                    Header="Custom API Permissions"
+                    IsEnabled="{x:Bind UseCustomScopes, Mode=OneWay}"
+                    Style="{StaticResource NewItemEntryTextBoxStyle}" />
+                <Button
+                    Grid.Column="1"
+                    Name="AddApiPermissionButton"
+                    IsEnabled="{x:Bind UseCustomScopes, Mode=OneWay}"
+                    Click="AddApiPermissionButton_OnClick"
+                    VerticalAlignment="Bottom"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE710;"
+                    Background="Transparent"
+                    FontWeight="SemiBold"
+                    Foreground="Black">
+                    <Button.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.ThemeDictionaries>
+                                <ResourceDictionary x:Key="Dark">
+                                    <!-- ReSharper disable once Xaml.RedundantResource -->
+                                    <SolidColorBrush x:Key="ButtonForegroundPointerOver"
+                                                     Color="{StaticResource ColorSecondary}" />
+                                    <!-- ReSharper disable once Xaml.RedundantResource -->
+                                    <SolidColorBrush x:Key="ButtonForegroundPressed"
+                                                     Color="{StaticResource ColorSecondary}" />
+                                    <!-- ReSharper disable once Xaml.RedundantResource -->
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Transparent" />
+                                    <!-- ReSharper disable once Xaml.RedundantResource -->
+                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="Transparent" />
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="Light">
+                                    <!-- ReSharper disable once Xaml.RedundantResource -->
+                                    <SolidColorBrush x:Key="ButtonForegroundPointerOver"
+                                                     Color="{StaticResource ColorSecondary}" />
+                                    <!-- ReSharper disable once Xaml.RedundantResource -->
+                                    <SolidColorBrush x:Key="ButtonForegroundPressed"
+                                                     Color="{StaticResource ColorSecondary}" />
+                                    <!-- ReSharper disable once Xaml.RedundantResource -->
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Transparent" />
+                                    <!-- ReSharper disable once Xaml.RedundantResource -->
+                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="Transparent" />
+                                </ResourceDictionary>
+                            </ResourceDictionary.ThemeDictionaries>
+                        </ResourceDictionary>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+
+            <TextBlock
+                Grid.Row="4" Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Text="Selected API Permissions"
+                Margin="24,24,24,0"
+                Foreground="Black"
+                Opacity="0.8"/>
+
+            <ListView
+                Grid.Row="5" Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="24,8,24,0"
+                ItemsSource="{x:Bind SelectedScopes, Mode=OneWay}"
+                SelectionMode="None"
+                IsItemClickEnabled="True"
+                Name="SelectedScopesListView"
+                ItemClick="SelectedScopesListView_OnItemClick">
+
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsStackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <ContentPresenter />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Margin="{StaticResource SmallRightMargin}"
+                            Padding="{StaticResource XSmallLeftTopRightBottomMargin}"
+                            CornerRadius="8"
+                            Background="{StaticResource PrimaryColor}">
+                            <TextBlock
+                                FontFamily="Nirmala UI"
+                                Text="{Binding}"
+                                Foreground="Black" />
+                            <TextBlock
+                                FontFamily="Nirmala UI"
+                                Text="x"
+                                FontWeight="Bold"
+                                Margin="8,0,0,0"
+                                Foreground="Black" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+        </Grid>
+
+    </Grid>
+</Page>
