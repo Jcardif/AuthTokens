@@ -17,6 +17,13 @@ namespace AuthTokens
         private ObservableCollection<string> _graphScopes;
         private bool _useCustomScopes;
         private ObservableCollection<string> _selectedScopes = new ObservableCollection<string>();
+        private string _accessToken;
+
+        public string AccessToken
+        {
+            get => _accessToken;
+            set => Set(ref _accessToken, value);
+        }
 
         public ObservableCollection<string> SelectedScopes
         {
@@ -32,6 +39,8 @@ namespace AuthTokens
                 "email", "profile", "User.Read", "offline_access", "openid", "User.Read.All", "User.ReadBasic.All",
                 "User.ReadWrite", "User.ReadWrite.All"
             };
+
+
         }
 
         public ObservableCollection<string> GraphScopes
@@ -80,6 +89,9 @@ namespace AuthTokens
         {
             var scope = e.ClickedItem.ToString();
             SelectedScopes.Remove(scope);
+
+            if(!UseCustomScopes)
+                GraphScopes.Add(scope);
         }
 
         private void ToggleSwitch_OnToggled(object sender, RoutedEventArgs e)
@@ -90,6 +102,30 @@ namespace AuthTokens
                 return;
             
             UseCustomScopes = toggleSwitch.IsOn;
+            SelectedScopes = new ObservableCollection<string>();
+            GraphScopes = new ObservableCollection<string>
+            {
+                "email", "profile", "User.Read", "offline_access", "openid", "User.Read.All", "User.ReadBasic.All",
+                "User.ReadWrite", "User.ReadWrite.All"
+            };
+        }
+
+        
+        private void ScopesAutoSuggestBox_OnSuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            var scope = args.SelectedItem.ToString();
+            if (string.IsNullOrEmpty(scope))
+                return;
+            sender.Text = string.Empty;
+
+            SelectedScopes.Add(scope);
+            GraphScopes.Remove(scope);
+            sender.IsSuggestionListOpen = false;
+        }
+
+        private void GetAccessTokenButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

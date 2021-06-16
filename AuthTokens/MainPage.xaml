@@ -19,6 +19,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -65,6 +67,7 @@
 
             <controls:RadioButtons
                 Grid.Row="2" Grid.Column="0"
+                Grid.ColumnSpan="2"
                 Header="Allowed Authentication"
                 SelectedIndex="0"
                 Margin="24,24,24,0"
@@ -116,10 +119,12 @@
 
             <AutoSuggestBox
                 Grid.Row="2" Grid.Column="0"
+                Name="ScopesAutoSuggestBox"
                 IsEnabled="{x:Bind Path=UseCustomScopes, Mode=OneWay, Converter={StaticResource BoolNegationConverter }}"
                 Style="{StaticResource NewItemEntryAutoSuggestBoxStyle}"
                 Header="Microsoft Graph API Permissions"
-                ItemsSource="{x:Bind GraphScopes, Mode=OneWay}" />
+                ItemsSource="{x:Bind GraphScopes, Mode=OneWay}" 
+                SuggestionChosen="ScopesAutoSuggestBox_OnSuggestionChosen"/>
 
             <Grid
                 Grid.Row="3" Grid.Column="0">
@@ -237,6 +242,53 @@
 
             </ListView>
         </Grid>
+
+        <Border
+            Grid.Row="2" Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="0,24,0,0"
+            CornerRadius="8">
+            <controls:InfoBar
+                CornerRadius="8"
+                IsOpen="True"
+                Severity="Success"
+                x:Name="UpdateAvailableNotification"
+                Title="Update available."
+                Message="Restart the application to apply the latest update.">
+            </controls:InfoBar>
+        </Border>
+
+        <Button
+            Grid.Row="3" Grid.Column="0"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Stretch"
+            Name="GetAccessTokenButton"
+            Foreground="White"
+            Margin="0,24,0,0"
+            Background="{StaticResource SecondaryColor}"
+            RelativePanel.AlignHorizontalCenterWithPanel="True"
+            RelativePanel.Below="TimeReportedPicker"
+            CornerRadius="8"
+            Click="GetAccessTokenButton_OnClick">
+            <TextBlock
+                FontFamily="Nirmala UI"
+                FontWeight="Bold"
+                FontSize="15"
+                LineHeight="19.95"
+                Foreground="Black"
+                Text="GET ACCESS TOKEN" />
+        </Button>
+
+        <TextBox
+            Grid.Row="4" Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="0,24,0,0"
+            Header="Access Token"
+            IsReadOnly="True"
+            Text="{x:Bind AccessToken, Mode=OneWay}"
+            Style="{StaticResource NewItemEntryTextBoxStyle}" 
+            AcceptsReturn="True"
+            TextWrapping="Wrap"/>
 
     </Grid>
 </Page>
