@@ -73,7 +73,8 @@
                 Margin="24,24,24,0"
                 SelectionChanged="AuthenticationTypeButtons_OnSelectionChanged"
                 Name="AuthenticationTypeButtons">
-                <x:String>Organization Accounts Only</x:String>
+                <x:String>Multiple Organization Accounts Only</x:String>
+                <x:String>Single Organization Accounts Only</x:String>
                 <x:String>Personal Microsoft Accounts Only</x:String>
                 <x:String>Both Organization and Personal Microsoft Accounts</x:String>
             </controls:RadioButtons>
