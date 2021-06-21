@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:converters="using:Microsoft.Toolkit.Uwp.UI.Converters"
+    xmlns:helpers="using:AuthTokens.Helpers"
     mc:Ignorable="d"
     Background="White">
 
@@ -55,12 +56,13 @@
             <TextBox
                 Grid.Row="1" Grid.Column="0"
                 Header="Tenant Id"
-                Text="Common"
+                Text="{x:Bind TenantId, Mode=TwoWay}"
                 Style="{StaticResource NewItemEntryTextBoxStyle}" />
 
             <TextBox
                 Grid.Row="1" Grid.Column="1"
                 Header="Client Id"
+                Text="{x:Bind ClientId, Mode=TwoWay}"
                 Style="{StaticResource NewItemEntryTextBoxStyle}" />
 
 
@@ -71,11 +73,13 @@
                 SelectedIndex="0"
                 Margin="24,24,24,0"
                 SelectionChanged="AuthenticationTypeButtons_OnSelectionChanged"
-                Name="AuthenticationTypeButtons">
-                <x:String>Multiple Organization Accounts Only</x:String>
-                <x:String>Single Organization Accounts Only</x:String>
-                <x:String>Personal Microsoft Accounts Only</x:String>
-                <x:String>Both Organization and Personal Microsoft Accounts</x:String>
+                Name="AuthenticationTypeButtons"
+                ItemsSource="{x:Bind AuthenticationTypes, Mode=OneWay}">
+                <controls:RadioButtons.ItemTemplate>
+                    <DataTemplate x:DataType="helpers:AuthenticationType">
+                        <RadioButton Content="{Binding Name}"/>
+                    </DataTemplate>
+                </controls:RadioButtons.ItemTemplate>
             </controls:RadioButtons>
         </Grid>
 
@@ -279,12 +283,10 @@
                 CornerRadius="8"
                 Click="GetAccessTokenButton_OnClick">
                 <TextBlock
-                    FontFamily="Nirmala UI"
+                    FontFamily="Open Sans"
                     FontWeight="Bold"
-                    FontSize="15"
-                    LineHeight="19.95"
                     Foreground="Black"
-                    Text="GET ACCESS TOKEN" />
+                    Text="GET TOKEN" />
             </Button>
 
             <Button
@@ -299,12 +301,10 @@
                 CornerRadius="8"
                 Click="CopyAccessTokenButton_OnClick">
                 <TextBlock
-                    FontFamily="Nirmala UI"
+                    FontFamily="Open sans"
                     FontWeight="Bold"
-                    FontSize="15"
-                    LineHeight="19.95"
                     Foreground="Black"
-                    Text="COPY ACCESS TOKEN" />
+                    Text="COPY TOKEN" />
             </Button>
 
             <Button
@@ -319,10 +319,8 @@
                 CornerRadius="8"
                 Click="LogoutButton_OnClick">
                 <TextBlock
-                    FontFamily="Nirmala UI"
+                    FontFamily="Open Sans"
                     FontWeight="Bold"
-                    FontSize="15"
-                    LineHeight="19.95"
                     Foreground="Black"
                     Text="LOG OUT USER" />
             </Button>

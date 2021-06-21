@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using AuthTokens.Annotations;
+using AuthTokens.Helpers;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -18,6 +19,8 @@ namespace AuthTokens
         private bool _useCustomScopes;
         private ObservableCollection<string> _selectedScopes = new ObservableCollection<string>();
         private string _accessToken;
+        private string _tenantId = "Common";
+        private string _clientId;
 
         public string AccessToken
         {
@@ -31,6 +34,22 @@ namespace AuthTokens
             set => Set(ref _selectedScopes, value);
         }
 
+        public string TenantId
+        {
+            get => _tenantId;
+            set => Set(ref _tenantId, value);
+        }
+
+        public string ClientId
+        {
+            get => _clientId;
+            set => Set(ref _clientId, value);
+        }
+
+        public string AuthenticationType { get; set; }
+
+        public ObservableCollection<AuthenticationType> AuthenticationTypes { get; set; }   
+
         public MainPage()
         {
             InitializeComponent();
@@ -40,6 +59,14 @@ namespace AuthTokens
                 "User.ReadWrite", "User.ReadWrite.All"
             };
 
+            AuthenticationTypes = new ObservableCollection<AuthenticationType>()
+            {
+                new AuthenticationType(AuthenticationTypeEnum.MultipleOrgsOnly, "Multiple Organization Accounts Only"),
+                new AuthenticationType(AuthenticationTypeEnum.SingleOrgOnly, "Single Organization Accounts Only"),
+                new AuthenticationType(AuthenticationTypeEnum.PersonalAccountsOnly, "Personal Microsoft Accounts Only"),
+                new AuthenticationType(AuthenticationTypeEnum.BothOrgAndPersonalAccounts,
+                    "Both Organization and Personal Microsoft Accounts")
+            };
 
         }
 
@@ -60,6 +87,7 @@ namespace AuthTokens
 
         private void AuthenticationTypeButtons_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            
         }
 
         [NotifyPropertyChangedInvocator]
@@ -125,7 +153,6 @@ namespace AuthTokens
 
         private void GetAccessTokenButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new System.NotImplementedException();
         }
 
         private void CopyAccessTokenButton_OnClick(object sender, RoutedEventArgs e)

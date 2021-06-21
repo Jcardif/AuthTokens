@@ -119,6 +119,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\AuthenticationType.cs" />
+    <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\Json.cs" />
     <Compile Include="Helpers\LoginResultType.cs" />
     <Compile Include="Helpers\Singleton.cs" />
