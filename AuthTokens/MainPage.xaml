@@ -20,7 +20,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -244,44 +243,94 @@
             </ListView>
         </Grid>
 
-        <Border
-            Grid.Row="2" Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Margin="0,24,0,0"
-            CornerRadius="8">
-            <controls:InfoBar
-                CornerRadius="8"
-                IsOpen="True"
-                Severity="Success"
-                x:Name="UpdateAvailableNotification"
-                Title="Update available."
-                Message="Restart the application to apply the latest update.">
-            </controls:InfoBar>
-        </Border>
+        <Grid
+            Grid.Row="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border
+                Grid.Column="0"
+                Margin="0,24,0,0"
+                CornerRadius="8">
+                <controls:InfoBar
+                    CornerRadius="8"
+                    IsOpen="True"
+                    Severity="Success"
+                    x:Name="UpdateAvailableNotification"
+                    Title="Update available."
+                    Message="Restart the application to apply the latest update.">
+                </controls:InfoBar>
+            </Border>
 
-        <Button
-            Grid.Row="3" Grid.Column="0"
-            Grid.ColumnSpan="2"
-            HorizontalAlignment="Stretch"
-            Name="GetAccessTokenButton"
-            Foreground="White"
-            Margin="0,24,0,0"
-            Background="{StaticResource SecondaryColor}"
-            RelativePanel.AlignHorizontalCenterWithPanel="True"
-            RelativePanel.Below="TimeReportedPicker"
-            CornerRadius="8"
-            Click="GetAccessTokenButton_OnClick">
-            <TextBlock
-                FontFamily="Nirmala UI"
-                FontWeight="Bold"
-                FontSize="15"
-                LineHeight="19.95"
-                Foreground="Black"
-                Text="GET ACCESS TOKEN" />
-        </Button>
+            <Button
+                Grid.Column="1"
+                HorizontalAlignment="Stretch"
+                Name="GetAccessTokenButton"
+                Foreground="White"
+                Margin="24,24,0,0"
+                Background="{StaticResource SecondaryColor}"
+                RelativePanel.AlignHorizontalCenterWithPanel="True"
+                RelativePanel.Below="TimeReportedPicker"
+                CornerRadius="8"
+                Click="GetAccessTokenButton_OnClick">
+                <TextBlock
+                    FontFamily="Nirmala UI"
+                    FontWeight="Bold"
+                    FontSize="15"
+                    LineHeight="19.95"
+                    Foreground="Black"
+                    Text="GET ACCESS TOKEN" />
+            </Button>
+
+            <Button
+                Grid.Column="2"
+                HorizontalAlignment="Stretch"
+                Name="CopyAccessTokenButton"
+                Foreground="White"
+                Margin="24,24,0,0"
+                Background="{StaticResource SecondaryColor}"
+                RelativePanel.AlignHorizontalCenterWithPanel="True"
+                RelativePanel.Below="TimeReportedPicker"
+                CornerRadius="8"
+                Click="CopyAccessTokenButton_OnClick">
+                <TextBlock
+                    FontFamily="Nirmala UI"
+                    FontWeight="Bold"
+                    FontSize="15"
+                    LineHeight="19.95"
+                    Foreground="Black"
+                    Text="COPY ACCESS TOKEN" />
+            </Button>
+
+            <Button
+                Grid.Column="3"
+                HorizontalAlignment="Stretch"
+                Name="LogoutButton"
+                Foreground="White"
+                Margin="24,24,0,0"
+                Background="{StaticResource SecondaryColor}"
+                RelativePanel.AlignHorizontalCenterWithPanel="True"
+                RelativePanel.Below="TimeReportedPicker"
+                CornerRadius="8"
+                Click="LogoutButton_OnClick">
+                <TextBlock
+                    FontFamily="Nirmala UI"
+                    FontWeight="Bold"
+                    FontSize="15"
+                    LineHeight="19.95"
+                    Foreground="Black"
+                    Text="LOG OUT USER" />
+            </Button>
+
+        </Grid>
 
         <TextBox
-            Grid.Row="4" Grid.Column="0"
+            Grid.Row="3" Grid.Column="0"
             Grid.ColumnSpan="2"
             Margin="0,24,0,0"
             Header="Access Token"

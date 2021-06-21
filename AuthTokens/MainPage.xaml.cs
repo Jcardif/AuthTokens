@@ -127,5 +127,15 @@ namespace AuthTokens
         {
             throw new System.NotImplementedException();
         }
+
+        private void CopyAccessTokenButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void LogoutButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
