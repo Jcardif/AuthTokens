@@ -1,10 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Media.Protection.PlayReady;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using AuthTokens.Annotations;
 using AuthTokens.Helpers;
+using AuthTokens.Services;
+using Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -21,6 +25,9 @@ namespace AuthTokens
         private string _accessToken;
         private string _tenantId = "Common";
         private string _clientId;
+        private string _infoBarTitle;
+        private string _infoBarMessage;
+        private InfoBarSeverity _severity;
 
         public string AccessToken
         {
@@ -46,9 +53,28 @@ namespace AuthTokens
             set => Set(ref _clientId, value);
         }
 
-        public string AuthenticationType { get; set; }
+        public string InfoBarTitle
+        {
+            get => _infoBarTitle;
+            set => Set(ref _infoBarTitle, value);
+        }
 
-        public ObservableCollection<AuthenticationType> AuthenticationTypes { get; set; }   
+        public string InfoBarMessage
+        {
+            get => _infoBarMessage;
+            set => Set(ref _infoBarMessage, value);
+        }
+
+        public InfoBarSeverity Severity
+        {
+            get => _severity;
+            set => Set(ref _severity, value);
+        }
+
+        public AuthenticationType AuthenticationType { get; set; }
+
+        public ObservableCollection<AuthenticationType> AuthenticationTypes { get; set; }
+
 
         public MainPage()
         {
@@ -85,10 +111,8 @@ namespace AuthTokens
         public event PropertyChangedEventHandler PropertyChanged;
 
 
-        private void AuthenticationTypeButtons_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            
-        }
+        private void AuthenticationTypeButtons_OnSelectionChanged(object sender, SelectionChangedEventArgs e) =>
+            AuthenticationType = (AuthenticationType)(sender as RadioButtons)?.SelectedItem;
 
         [NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -118,7 +142,7 @@ namespace AuthTokens
             var scope = e.ClickedItem.ToString();
             SelectedScopes.Remove(scope);
 
-            if(!UseCustomScopes)
+            if (!UseCustomScopes)
                 GraphScopes.Add(scope);
         }
 
@@ -126,9 +150,9 @@ namespace AuthTokens
         {
             var toggleSwitch = sender as ToggleSwitch;
 
-            if(toggleSwitch is null)
+            if (toggleSwitch is null)
                 return;
-            
+
             UseCustomScopes = toggleSwitch.IsOn;
             SelectedScopes = new ObservableCollection<string>();
             GraphScopes = new ObservableCollection<string>
@@ -138,7 +162,7 @@ namespace AuthTokens
             };
         }
 
-        
+
         private void ScopesAutoSuggestBox_OnSuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
             var scope = args.SelectedItem.ToString();
@@ -153,11 +177,45 @@ namespace AuthTokens
 
         private void GetAccessTokenButton_OnClick(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(TenantId))
+            {
+                InfoBarTitle = "Tenant Id cannot be Empty";
+                InfoBarMessage =
+                    "Please provide the tenant Id to proceed, this can be obtained from Azure Ad or use the default value : Common";
+                Severity = InfoBarSeverity.Error;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(ClientId))
+            {
+                InfoBarTitle = "Client Id cannot be Empty";
+                InfoBarMessage =
+                    "Please provide the client Id to proceed, this can be obtained from Azure Ad";
+                Severity = InfoBarSeverity.Error;
+                return;
+            }
+
+            if (SelectedScopes is null || SelectedScopes.Count == 0)
+            {
+                InfoBarTitle = "API Permissions missing";
+                InfoBarMessage = "Provide either Graph API permissions or custom API Permissions";
+                Severity = InfoBarSeverity.Error;
+                return;
+            }
+
+
         }
 
         private void CopyAccessTokenButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new System.NotImplementedException();
+            if (string.IsNullOrEmpty(AccessToken))
+                return;
+
+            DataPackage dataPackage = new DataPackage();
+            // copy 
+            dataPackage.RequestedOperation = DataPackageOperation.Copy;
+            dataPackage.SetText(AccessToken);
+            Clipboard.SetContent(dataPackage);
         }
 
         private void LogoutButton_OnClick(object sender, RoutedEventArgs e)

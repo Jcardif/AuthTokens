@@ -264,10 +264,11 @@
                 <controls:InfoBar
                     CornerRadius="8"
                     IsOpen="True"
-                    Severity="Success"
-                    x:Name="UpdateAvailableNotification"
-                    Title="Update available."
-                    Message="Restart the application to apply the latest update.">
+                    IsClosable="False"
+                    Severity="{x:Bind Severity, Mode=OneWay}"
+                    x:Name="AppInfoBar"
+                    Title="{x:Bind InfoBarTitle, Mode=OneWay}"
+                    Message="{x:Bind InfoBarMessage, Mode=OneWay}">
                 </controls:InfoBar>
             </Border>
 
