@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
@@ -10,8 +10,20 @@ namespace AuthTokens.Services
 {
     public class IdentityService
     {
+        // For more information about using Identity, see
+        // https://github.com/Microsoft/WindowsTemplateStudio/blob/release/docs/UWP/services/identity.md
+        //
+        // Read more about Microsoft Identity Client here
+        // https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki
+        // https://docs.microsoft.com/azure/active-directory/develop/v2-overview
+
+        // TODO WTS: Please create a ClientID following these steps and update the app.config IdentityClientId.
+        // https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app
+        private readonly string _clientId = ConfigurationManager.AppSettings["IdentityClientId"];
+
         private readonly string _redirectUri = "https://login.microsoftonline.com/common/oauth2/nativeclient";
 
+        private readonly string[] _graphScopes = new string[] { "user.read" };
 
         private bool _integratedAuthAvailable;
         private IPublicClientApplication _client;
@@ -21,49 +33,45 @@ namespace AuthTokens.Services
 
         public event EventHandler LoggedOut;
 
-        public void InitializeWithAadAndPersonalMsAccounts(string clientId)
+        public void InitializeWithAadAndPersonalMsAccounts()
         {
             _integratedAuthAvailable = false;
-            _client = PublicClientApplicationBuilder
-                .Create(clientId)
-                .WithAuthority(AadAuthorityAudience.AzureAdAndPersonalMicrosoftAccount)
-                .WithRedirectUri(_redirectUri)
-                .Build();
+            _client = PublicClientApplicationBuilder.Create(_clientId)
+                                                    .WithAuthority(AadAuthorityAudience.AzureAdAndPersonalMicrosoftAccount)
+                                                    .WithRedirectUri(_redirectUri)
+                                                    .Build();
         }
 
-        public void InitializeWithPersonalMsAccount(string clientId)
+        public void InitializeWithPersonalMsAccount()
         {
             _integratedAuthAvailable = false;
-            _client = PublicClientApplicationBuilder
-                .Create(clientId)
-                .WithAuthority(AadAuthorityAudience.PersonalMicrosoftAccount)
-                .WithRedirectUri(_redirectUri)
-                .Build();
+            _client = PublicClientApplicationBuilder.Create(_clientId)
+                                                    .WithAuthority(AadAuthorityAudience.PersonalMicrosoftAccount)
+                                                    .WithRedirectUri(_redirectUri)
+                                                    .Build();
         }
 
-        public void InitializeWithAadMultipleOrgs(string clientId, bool integratedAuth = false)
+        public void InitializeWithAadMultipleOrgs(bool integratedAuth = false)
         {
             _integratedAuthAvailable = integratedAuth;
-            _client = PublicClientApplicationBuilder
-                .Create(clientId)
-                .WithAuthority(AadAuthorityAudience.AzureAdMultipleOrgs)
-                .WithRedirectUri(_redirectUri)
-                .Build();
+            _client = PublicClientApplicationBuilder.Create(_clientId)
+                                                    .WithAuthority(AadAuthorityAudience.AzureAdMultipleOrgs)
+                                                    .WithRedirectUri(_redirectUri)
+                                                    .Build();
         }
 
-        public void InitializeWithAadSingleOrg(string clientId, string tenant, bool integratedAuth = false)
+        public void InitializeWithAadSingleOrg(string tenant, bool integratedAuth = false)
         {
             _integratedAuthAvailable = integratedAuth;
-            _client = PublicClientApplicationBuilder
-                .Create(clientId)
-                .WithAuthority(AzureCloudInstance.AzurePublic, tenant)
-                .WithRedirectUri(_redirectUri)
-                .Build();
+            _client = PublicClientApplicationBuilder.Create(_clientId)
+                                                    .WithAuthority(AzureCloudInstance.AzurePublic, tenant)
+                                                    .WithRedirectUri(_redirectUri)
+                                                    .Build();
         }
 
         public bool IsLoggedIn() => _authenticationResult != null;
 
-        public async Task<LoginResultType> LoginAsync(List<string> scopes)
+        public async Task<LoginResultType> LoginAsync()
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
@@ -73,12 +81,9 @@ namespace AuthTokens.Services
             try
             {
                 var accounts = await _client.GetAccountsAsync();
-
-                _authenticationResult = await _client
-                    .AcquireTokenInteractive(scopes)
-                    .WithAccount(accounts.FirstOrDefault())
-                    .ExecuteAsync();
-
+                _authenticationResult = await _client.AcquireTokenInteractive(_graphScopes)
+                                                     .WithAccount(accounts.FirstOrDefault())
+                                                     .ExecuteAsync();
                 if (!IsAuthorized())
                 {
                     _authenticationResult = null;
@@ -137,9 +142,9 @@ namespace AuthTokens.Services
             }
         }
 
-        public async Task<string> GetAccessTokenForGraphAsync(List<string> scopes) => await GetAccessTokenAsync(scopes);
+        public async Task<string> GetAccessTokenForGraphAsync() => await GetAccessTokenAsync(_graphScopes);
 
-        public async Task<string> GetAccessTokenAsync(List<string> scopes)
+        public async Task<string> GetAccessTokenAsync(string[] scopes)
         {
             var acquireTokenSuccess = await AcquireTokenSilentAsync(scopes);
             if (acquireTokenSuccess)
@@ -166,8 +171,10 @@ namespace AuthTokens.Services
                 }
             }
         }
-        
-        private async Task<bool> AcquireTokenSilentAsync(List<string> scopes)
+
+        public async Task<bool> AcquireTokenSilentAsync() => await AcquireTokenSilentAsync(_graphScopes);
+
+        private async Task<bool> AcquireTokenSilentAsync(string[] scopes)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
@@ -187,7 +194,7 @@ namespace AuthTokens.Services
                 {
                     try
                     {
-                        _authenticationResult = await _client.AcquireTokenByIntegratedWindowsAuth(scopes)
+                        _authenticationResult = await _client.AcquireTokenByIntegratedWindowsAuth(_graphScopes)
                                                              .ExecuteAsync();
                         return true;
                     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.ApplicationModel.DataTransfer;
@@ -75,7 +76,8 @@ namespace AuthTokens
 
         public ObservableCollection<AuthenticationType> AuthenticationTypes { get; set; }
 
-
+        private IdentityService IdentityService => Singleton<IdentityService>.Instance;
+        private UserDataService UserDataService => Singleton<UserDataService>.Instance;
         public MainPage()
         {
             InitializeComponent();
@@ -94,6 +96,27 @@ namespace AuthTokens
                     "Both Organization and Personal Microsoft Accounts")
             };
 
+            InitializeLogIn();
+        }
+
+        private async void InitializeLogIn()
+        {
+            IdentityService.LoggedIn += OnLoggedIn;
+
+            UserDataService.Initialize();
+            IdentityService.InitializeWithAadAndPersonalMsAccounts();
+            var silentLoginSuccess = await IdentityService.AcquireTokenSilentAsync();
+            if (!silentLoginSuccess || !IdentityService.IsAuthorized())
+            {
+                //await RedirectLoginPageAsync();
+            }
+            if(silentLoginSuccess && IdentityService.IsAuthorized())
+                AccessToken = await IdentityService.GetAccessTokenForGraphAsync();
+        }
+
+        private async void OnLoggedIn(object sender, EventArgs e)
+        {
+            AccessToken = await IdentityService.GetAccessTokenForGraphAsync();
         }
 
         public ObservableCollection<string> GraphScopes
@@ -175,7 +198,7 @@ namespace AuthTokens
             sender.IsSuggestionListOpen = false;
         }
 
-        private void GetAccessTokenButton_OnClick(object sender, RoutedEventArgs e)
+        private async void GetAccessTokenButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(TenantId))
             {
@@ -204,6 +227,7 @@ namespace AuthTokens
             }
 
 
+            var loginResult = await IdentityService.LoginAsync();
         }
 
         private void CopyAccessTokenButton_OnClick(object sender, RoutedEventArgs e)
