@@ -289,6 +289,7 @@ namespace AuthTokens
             var config = new LoginConfig(ClientId, TenantId, UseCustomScopes, SelectedScopes.ToList(),
                 AuthenticationTypes.ToList());
             await SaveLoginConfiguration(config);
+
             var loginResult = await IdentityService.LoginAsync(SelectedScopes.ToList());
         }
 
@@ -304,9 +305,9 @@ namespace AuthTokens
             Clipboard.SetContent(dataPackage);
         }
 
-        private void LogoutButton_OnClick(object sender, RoutedEventArgs e)
+        private async void LogoutButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new System.NotImplementedException();
+            await IdentityService.LogoutAsync();
         }
 
         private async Task SaveLoginConfiguration(LoginConfig config)
