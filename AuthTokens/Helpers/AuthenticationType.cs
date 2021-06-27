@@ -8,13 +8,15 @@ namespace AuthTokens.Helpers
 {
     public class AuthenticationType
     {
-        public AuthenticationType(AuthenticationTypeEnum authenticationTypeEnum, string name)
+        public AuthenticationType(AuthenticationTypeEnum authenticationTypeEnum, string name, bool isChecked)
         {
             AuthenticationTypeEnum = authenticationTypeEnum;
             Name = name;
+            IsChecked = isChecked;
         }
 
         public AuthenticationTypeEnum AuthenticationTypeEnum { get; set; }
         public string Name { get; set; }
+        public bool IsChecked { get; set; }
     }
 }

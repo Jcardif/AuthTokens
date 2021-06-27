@@ -4,6 +4,9 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 namespace AuthTokens
 {
@@ -20,6 +23,9 @@ namespace AuthTokens
         {
             InitializeComponent();
             Suspending += OnSuspending;
+
+            AppCenter.Start("2c0aedcf-02e5-407f-a662-3831d2e0ca9f",
+                typeof(Analytics), typeof(Crashes));
         }
 
         /// <summary>

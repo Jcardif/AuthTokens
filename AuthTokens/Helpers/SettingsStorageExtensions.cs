@@ -36,6 +36,7 @@ namespace AuthTokens.Helpers
             var fileContent = await FileIO.ReadTextAsync(file);
 
             return await Json.ToObjectAsync<T>(fileContent);
+            
         }
 
         public static async Task SaveAsync<T>(this ApplicationDataContainer settings, string key, T value)

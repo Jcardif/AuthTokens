@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Storage;
 using AuthTokens.Helpers;
@@ -62,7 +63,7 @@ namespace AuthTokens.Services
 
         private async Task<UserData> GetUserFromGraphApiAsync()
         {
-            var accessToken = await IdentityService.GetAccessTokenForGraphAsync();
+            var accessToken = await IdentityService.GetAccessTokenAsync(new List<string>{"user.read"});
             if (string.IsNullOrEmpty(accessToken))
             {
                 return null;

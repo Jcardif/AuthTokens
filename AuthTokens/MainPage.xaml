@@ -72,12 +72,14 @@
                 Header="Allowed Authentication"
                 SelectedIndex="0"
                 Margin="24,24,24,0"
-                SelectionChanged="AuthenticationTypeButtons_OnSelectionChanged"
+                SelectedItem="{x:Bind AuthenticationType, Mode=TwoWay}"
                 Name="AuthenticationTypeButtons"
                 ItemsSource="{x:Bind AuthenticationTypes, Mode=OneWay}">
                 <controls:RadioButtons.ItemTemplate>
                     <DataTemplate x:DataType="helpers:AuthenticationType">
-                        <RadioButton Content="{Binding Name}"/>
+                        <RadioButton 
+                            Content="{Binding Name}"
+                            IsChecked="{Binding IsChecked}"/>
                     </DataTemplate>
                 </controls:RadioButtons.ItemTemplate>
             </controls:RadioButtons>

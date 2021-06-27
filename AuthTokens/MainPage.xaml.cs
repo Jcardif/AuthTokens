@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Media.Protection.PlayReady;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using AuthTokens.Annotations;
 using AuthTokens.Helpers;
 using AuthTokens.Services;
+using Microsoft.Toolkit.Uwp.UI.Controls.TextToolbarSymbols;
 using Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -20,15 +26,19 @@ namespace AuthTokens
     /// </summary>
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
+        private const string LoginConfigFolderName = "LoginConfig";
+
         private ObservableCollection<string> _graphScopes;
         private bool _useCustomScopes;
         private ObservableCollection<string> _selectedScopes = new ObservableCollection<string>();
         private string _accessToken;
-        private string _tenantId = "Common";
+        private string _tenantId;
         private string _clientId;
         private string _infoBarTitle;
         private string _infoBarMessage;
         private InfoBarSeverity _severity;
+        private AuthenticationType _authenticationType;
+        private ObservableCollection<AuthenticationType> _authenticationTypes;
 
         public string AccessToken
         {
@@ -39,19 +49,28 @@ namespace AuthTokens
         public ObservableCollection<string> SelectedScopes
         {
             get => _selectedScopes;
-            set => Set(ref _selectedScopes, value);
+            set
+            {
+                Set(ref _selectedScopes, value);
+            }
         }
 
         public string TenantId
         {
             get => _tenantId;
-            set => Set(ref _tenantId, value);
+            set
+            {
+                Set(ref _tenantId, value);
+            }
         }
 
         public string ClientId
         {
             get => _clientId;
-            set => Set(ref _clientId, value);
+            set
+            {
+                Set(ref _clientId, value);
+            }
         }
 
         public string InfoBarTitle
@@ -72,9 +91,35 @@ namespace AuthTokens
             set => Set(ref _severity, value);
         }
 
-        public AuthenticationType AuthenticationType { get; set; }
+        public AuthenticationType AuthenticationType
+        {
+            get => _authenticationType;
+            set
+            {
+                _authenticationType = value;
+            }
+        }
 
-        public ObservableCollection<AuthenticationType> AuthenticationTypes { get; set; }
+        public ObservableCollection<string> GraphScopes
+        {
+            get => _graphScopes;
+            set => Set(ref _graphScopes, value);
+        }
+
+        public bool UseCustomScopes
+        {
+            get => _useCustomScopes;
+            set
+            {
+                Set(ref _useCustomScopes, value);
+            }
+        }
+
+        public ObservableCollection<AuthenticationType> AuthenticationTypes
+        {
+            get => _authenticationTypes;
+            set => Set(ref _authenticationTypes, value);
+        }
 
         private IdentityService IdentityService => Singleton<IdentityService>.Instance;
         private UserDataService UserDataService => Singleton<UserDataService>.Instance;
@@ -87,56 +132,63 @@ namespace AuthTokens
                 "User.ReadWrite", "User.ReadWrite.All"
             };
 
-            AuthenticationTypes = new ObservableCollection<AuthenticationType>()
-            {
-                new AuthenticationType(AuthenticationTypeEnum.MultipleOrgsOnly, "Multiple Organization Accounts Only"),
-                new AuthenticationType(AuthenticationTypeEnum.SingleOrgOnly, "Single Organization Accounts Only"),
-                new AuthenticationType(AuthenticationTypeEnum.PersonalAccountsOnly, "Personal Microsoft Accounts Only"),
-                new AuthenticationType(AuthenticationTypeEnum.BothOrgAndPersonalAccounts,
-                    "Both Organization and Personal Microsoft Accounts")
-            };
-
             InitializeLogIn();
         }
 
         private async void InitializeLogIn()
         {
+            ClientId = await GetLoginSettings(LoginSettings.ClientId) as string;
+            TenantId = await GetLoginSettings(LoginSettings.TenantId) as string;
+            var useCustomScopes=await GetLoginSettings(LoginSettings.UseCustomScopes);
+            if (useCustomScopes != null)
+                UseCustomScopes = useCustomScopes is bool s && s;
+
+            var authTypes = await GetLoginSettings(LoginSettings.AuthType) as List<AuthenticationType>;
+            if (authTypes is null || authTypes.Count == 0)
+            {
+                AuthenticationTypes = new ObservableCollection<AuthenticationType>()
+                {
+                    new AuthenticationType(AuthenticationTypeEnum.MultipleOrgsOnly, "Multiple Organization Accounts Only", false),
+                    new AuthenticationType(AuthenticationTypeEnum.SingleOrgOnly, "Single Organization Accounts Only", false),
+                    new AuthenticationType(AuthenticationTypeEnum.PersonalAccountsOnly, "Personal Microsoft Accounts Only", false),
+                    new AuthenticationType(AuthenticationTypeEnum.BothOrgAndPersonalAccounts,
+                        "Both Organization and Personal Microsoft Accounts", false)
+                };
+            }
+            else
+            {
+                AuthenticationTypes = new ObservableCollection<AuthenticationType>(authTypes);
+            }
+
+
+            if (await GetLoginSettings(LoginSettings.Scopes) is List<string> scopes)
+                SelectedScopes = new ObservableCollection<string>(scopes);
+
+
             IdentityService.LoggedIn += OnLoggedIn;
 
+            if(string.IsNullOrEmpty(ClientId))
+                return;
+
             UserDataService.Initialize();
-            IdentityService.InitializeWithAadAndPersonalMsAccounts();
-            var silentLoginSuccess = await IdentityService.AcquireTokenSilentAsync();
+            IdentityService.InitializeWithAadAndPersonalMsAccounts(ClientId);
+            var silentLoginSuccess = await IdentityService.AcquireTokenSilentAsync(SelectedScopes.ToList());
             if (!silentLoginSuccess || !IdentityService.IsAuthorized())
             {
                 //await RedirectLoginPageAsync();
             }
-            if(silentLoginSuccess && IdentityService.IsAuthorized())
-                AccessToken = await IdentityService.GetAccessTokenForGraphAsync();
+            if (silentLoginSuccess && IdentityService.IsAuthorized())
+                AccessToken = await IdentityService.GetAccessTokenAsync(SelectedScopes.ToList());
         }
 
         private async void OnLoggedIn(object sender, EventArgs e)
         {
-            AccessToken = await IdentityService.GetAccessTokenForGraphAsync();
+            AccessToken = await IdentityService.GetAccessTokenAsync(SelectedScopes.ToList());
         }
 
-        public ObservableCollection<string> GraphScopes
-        {
-            get => _graphScopes;
-            set => Set(ref _graphScopes, value);
-        }
-
-        public bool UseCustomScopes
-        {
-            get => _useCustomScopes;
-            set => Set(ref _useCustomScopes, value);
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-
-        private void AuthenticationTypeButtons_OnSelectionChanged(object sender, SelectionChangedEventArgs e) =>
-            AuthenticationType = (AuthenticationType)(sender as RadioButtons)?.SelectedItem;
-
+        
         [NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -226,8 +278,18 @@ namespace AuthTokens
                 return;
             }
 
+            var first = AuthenticationTypes.FirstOrDefault(a => a.Name == AuthenticationType.Name);
+            
+            if (first != null) 
+                first.IsChecked = true;
 
-            var loginResult = await IdentityService.LoginAsync();
+            AuthenticationTypes.Remove(AuthenticationType);
+            AuthenticationTypes.Add(first);
+
+            var config = new LoginConfig(ClientId, TenantId, UseCustomScopes, SelectedScopes.ToList(),
+                AuthenticationTypes.ToList());
+            await SaveLoginConfiguration(config);
+            var loginResult = await IdentityService.LoginAsync(SelectedScopes.ToList());
         }
 
         private void CopyAccessTokenButton_OnClick(object sender, RoutedEventArgs e)
@@ -245,6 +307,40 @@ namespace AuthTokens
         private void LogoutButton_OnClick(object sender, RoutedEventArgs e)
         {
             throw new System.NotImplementedException();
+        }
+
+        private async Task SaveLoginConfiguration(LoginConfig config)
+        {
+            await ApplicationData.Current.LocalFolder.SaveAsync(LoginConfigFolderName, config);
+        }
+
+        private async Task<object> GetLoginSettings(LoginSettings setting)
+        {
+            var config = await ApplicationData.Current.LocalFolder.ReadAsync<LoginConfig>(LoginConfigFolderName);
+            if (config is null)
+                return null;
+
+            switch (setting)
+            {
+                case LoginSettings.ClientId:
+                    return config.ClientId;
+                    
+                case LoginSettings.TenantId:
+                    return config.TenantId;
+                    
+                case LoginSettings.AuthType:
+                    return config.AuthenticationTypes;
+
+                case LoginSettings.UseCustomScopes:
+                    return config.UseCustomScopes;
+
+                case LoginSettings.Scopes:
+                    return config.Scopes;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(setting), setting, null);
+            }
+
         }
     }
 }

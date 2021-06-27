@@ -14,4 +14,13 @@ namespace AuthTokens.Helpers
         BothOrgAndPersonalAccounts
     }
 
+    public enum LoginSettings
+    {
+        ClientId,
+        TenantId,
+        AuthType,
+        UseCustomScopes,
+        Scopes
+    }
+
 }
